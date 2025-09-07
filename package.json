@@ -1,0 +1,16 @@
+{
+  "name": "todo-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo for Todo app (frontend + backend)",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm -w frontend run dev",
+    "build:frontend": "npm -w frontend run build",
+    "dev:backend": "npm -w backend run dev",
+    "start:backend": "npm -w backend start"
+  }
+}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Todo — TailwindCSS</title>
+    <link rel="stylesheet" href="../public/styles.css" />
+  </head>
+  <body class="h-full bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+    <div id="app" class="mx-auto max-w-2xl px-4 py-8">
+      <!-- Header -->
+      <header class="mb-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold tracking-tight">Todo</h1>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Organize tasks. Fast, accessible, responsive.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="themeToggle" class="btn-ghost" aria-label="Toggle dark mode">
+            <span class="sr-only">Toggle theme</span>
+            🌓
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard -->
+      <section id="dashboard" class="card p-4 mb-6" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title" class="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-3">Dashboard</h2>
+        <div id="globalError" class="mb-3 hidden text-sm px-3 py-2 rounded-md bg-rose-100 text-rose-800 dark:bg-rose-800/40 dark:text-rose-200" role="alert"></div>
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="rounded-lg px-4 py-3 border border-slate-200/70 dark:border-slate-700/60">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Total tasks</div>
+            <div id="dashTotal" class="text-xl font-semibold">0</div>
+          </div>
+          <div class="rounded-lg px-4 py-3 border border-slate-200/70 dark:border-slate-700/60">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Completed</div>
+            <div id="dashCompleted" class="text-xl font-semibold">0</div>
+          </div>
+          <div class="flex-1 min-w-[220px]">
+            <div class="flex items-center justify-between mb-1">
+              <div class="text-xs text-slate-500 dark:text-slate-400">Progress</div>
+              <div id="dashPercent" class="text-xs font-medium">0%</div>
+            </div>
+            <div class="h-2 w-full rounded-full bg-slate-200/70 dark:bg-slate-700/60" role="progressbar" aria-label="Completed percentage" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div id="dashProgress" class="h-2 rounded-full bg-indigo-600 dark:bg-emerald-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search -->
+      <section class="card p-4 mb-6" aria-labelledby="search-title">
+        <h2 id="search-title" class="sr-only">Search todos</h2>
+        <div class="flex items-start gap-3">
+          <label for="searchInput" class="sr-only">Search</label>
+          <input id="searchInput" class="input flex-1" placeholder="Search tasks..." autocomplete="off" list="searchSuggestions" />
+          <button id="clearSearch" class="btn-ghost" type="button" aria-label="Clear search">Clear</button>
+        </div>
+        <datalist id="searchSuggestions"></datalist>
+      </section>
+
+      <!-- Input Form -->
+      <section class="card p-4 mb-6" aria-labelledby="add-todo-title">
+        <h2 id="add-todo-title" class="sr-only">Add a new todo</h2>
+        <form id="todoForm" class="flex items-start gap-3" novalidate>
+          <label for="todoInput" class="sr-only">Todo</label>
+          <input id="todoInput" name="todo" class="input flex-1" placeholder="Add a new task…" autocomplete="off" required maxlength="200" />
+          <label for="prioritySelect" class="sr-only">Priority</label>
+          <select id="prioritySelect" name="priority" class="input w-32" aria-label="Priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button type="submit" class="btn-primary">Add</button>
+        </form>
+        <p id="formError" class="mt-2 text-sm text-rose-600 hidden" role="alert"></p>
+      </section>
+
+      <!-- Filters & Meta -->
+      <section class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div role="tablist" aria-label="Filter todos" class="flex items-center gap-2">
+          <button class="btn-ghost" data-filter="all" aria-selected="true">All</button>
+          <button class="btn-ghost" data-filter="active">Active</button>
+          <button class="btn-ghost" data-filter="completed">Completed</button>
+        </div>
+        <div class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+          <span id="todoCount" aria-live="polite">0 items</span>
+          <button id="clearCompleted" class="btn-ghost">Clear completed</button>
+        </div>
+      </section>
+
+      <!-- Loading State -->
+      <div id="loading" class="card p-6 mb-4 hidden">
+        <div class="flex items-center gap-3">
+          <div class="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-slate-500"></div>
+          <p class="text-sm">Loading your todos…</p>
+        </div>
+      </div>
+
+      <!-- Todo Lists -->
+      <main class="space-y-6" aria-live="polite">
+        <section class="card" aria-labelledby="active-heading">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/60">
+            <h2 id="active-heading" class="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Active</h2>
+          </div>
+          <ul id="activeList" role="list" class="divide-y divide-slate-200/70 dark:divide-slate-700/60"></ul>
+          <div id="emptyActive" class="px-4 py-6 text-center text-slate-500 hidden">No active tasks</div>
+        </section>
+
+        <section class="card" aria-labelledby="completed-heading">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200/70 dark:border-slate-700/60">
+            <h2 id="completed-heading" class="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Completed</h2>
+          </div>
+          <ul id="completedList" role="list" class="divide-y divide-slate-200/70 dark:divide-slate-700/60"></ul>
+          <div id="emptyCompleted" class="px-4 py-6 text-center text-slate-500 hidden">No completed tasks</div>
+        </section>
+      </main>
+    </div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script type="module" src="../public/build/react-app.js"></script>
+  </body>
+  </html>
