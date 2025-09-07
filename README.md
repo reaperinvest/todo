@@ -99,3 +99,24 @@ Inside `frontend/` (if you prefer local scripts):
 ## Contributing
 
 - Documentation: When making functional or structural changes (scripts, setup, structure, endpoints), update both README.md and README-TH.md to keep them consistent.
+## Backend database (PostgreSQL)
+
+- The backend now supports PostgreSQL for persistence.
+- Configure connection via env vars (either `DATABASE_URL` or discrete `PG*` vars):
+  - `DATABASE_URL` (e.g. `postgres://user:pass@localhost:5432/todo`)
+  - or: `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` (optional `PGSSL=1`)
+- Run the server and it will auto-create the `todos` table if missing.
+- Optional migration command: `npm -w backend run migrate`.
+
+Example (Windows PowerShell):
+
+```powershell
+$env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/todo"; npm -w backend run dev
+```
+
+Example (bash):
+
+```bash
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/todo npm -w backend run dev
+```
+
