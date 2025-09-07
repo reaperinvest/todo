@@ -96,3 +96,6 @@ Inside `frontend/` (if you prefer local scripts):
 - `npm run type-check` ΓÇö TypeScript type checking only
 
 
+## Contributing
+
+- Documentation: When making functional or structural changes (scripts, setup, structure, endpoints), update both README.md and README-TH.md to keep them consistent.
