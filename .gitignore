@@ -24,4 +24,4 @@ Thumbs.db
 # Env/config
 .env
 .env.*
-
+!backend/.env.example
