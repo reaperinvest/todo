@@ -144,3 +144,9 @@ pm install once to enable hooks.
 - Auto mode (now enabled): if no preference is set (or set to 'auto'), the app pings http://localhost:4000/api/health with a short timeout on startup.
   - If reachable → uses API
   - If not → falls back to localStorage
+
+## Postman collection
+
+- Import `postman/todo-api.postman_collection.json` and select environment `postman/local.postman_environment.json`.
+- Ensure the backend is running, then run requests in order:
+  1) Health → 2) List → 3) Create (captures `todoId`) → 4) Update → 5) Delete/Clear.

@@ -121,6 +121,12 @@ npm -w backend run dev
 
 หมายเหตุ: ถ้ารหัสผ่านมีอักขระพิเศษ (@, #, ?, / ฯลฯ) ให้เขียนแบบ URL-encode ใน `DATABASE_URL` เช่น @ → %40, # → %23
 
+## Postman (ทดสอบ Backend)
+
+- นำเข้าไฟล์ collection: `postman/todo-api.postman_collection.json`
+- เลือก Environment: `postman/local.postman_environment.json` (ค่า `baseUrl` คือ `http://localhost:4000`)
+- รันคำขอเรียงลำดับ: 1) Health → 2) List → 3) Create (จะบันทึกตัวแปร `todoId`) → 4) Update → 5) Delete/Clear
+
 ## แนวทางการมีส่วนร่วม (Contributing)
 
 - เอกสาร: เมื่อมีการเปลี่ยนแปลงฟังก์ชัน โครงสร้าง สคริปต์ ขั้นตอนใช้งาน หรือเอ็นพอยต์ โปรดอัปเดตทั้ง `README.md` และ `README-TH.md` ให้สอดคล้องกันเสมอ
