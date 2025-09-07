@@ -1,7 +1,11 @@
 // Lightweight PG client wrapper
 // Reads configuration from either DATABASE_URL or PG* env vars
 
-const { Pool } = require('pg');
+const { Pool, types } = require('pg');
+// Ensure BIGINT (int8, OID 20) is parsed to JS number for timestamp fields
+try {
+  types.setTypeParser(20, (val) => (val === null ? null : parseInt(val, 10)));
+} catch {}
 
 function createPool() {
   // Prefer DATABASE_URL; fallback to discrete vars
@@ -52,4 +56,3 @@ async function query(sql, params) {
 }
 
 module.exports = { pool, query, ensureSchema };
-
