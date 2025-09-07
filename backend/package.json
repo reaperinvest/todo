@@ -5,7 +5,10 @@
   "description": "Minimal backend stub for Todo app (Node HTTP no-deps)",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "migrate": "node server.js --migrate"
+  },
+  "dependencies": {
+    "pg": "^8.12.0"
   }
 }
-
