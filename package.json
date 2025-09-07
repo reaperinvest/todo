@@ -11,6 +11,10 @@
     "dev:frontend": "npm -w frontend run dev",
     "build:frontend": "npm -w frontend run build",
     "dev:backend": "npm -w backend run dev",
-    "start:backend": "npm -w backend start"
+    "start:backend": "npm -w backend start",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.5"
   }
 }

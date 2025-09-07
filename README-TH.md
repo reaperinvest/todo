@@ -152,3 +152,9 @@ npm -w backend run dev
 - รัน ensure schema แบบครั้งเดียว (ทางเลือก): `npm -w backend run migrate`
 - ถ้ารหัสผ่านมีอักขระพิเศษ (@, #, ?, / ฯลฯ) ให้เขียนแบบ URL-encode ใน `DATABASE_URL` เช่น @ → %40, # → %23
 
+
+## การตรวจเอกสารก่อน commit (Husky)
+- ในโปรเจกต์นี้มี hook ตรวจเอกสาร ก่อน commit หากมีการแก้โค้ด/คอนฟิก (ackend/, rontend/, package*.json) แต่ไม่ได้อัปเดต README.md และ README-TH.md พร้อมกัน การ commit จะล้มเหลว
+- ถ้าพึ่งโคลนมา ให้รัน 
+pm install เพื่อเปิดใช้งาน hook ก่อน
+

@@ -129,3 +129,7 @@ DATABASE_URL=postgres://postgres:postgres@localhost:5432/todo npm -w backend run
 npm -w backend run dev
 ```
 
+
+- Pre-commit check: A Husky hook runs a docs check. If code/config changes are staged without updating both READMEs, the commit will fail. Run 
+pm install once to enable hooks.
+
