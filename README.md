@@ -134,3 +134,13 @@ npm -w backend run dev
 pm install once to enable hooks.
 
  “- Chore: update lockfile (YYYY-MM-DD)”
+## Frontend data source modes
+
+- Manual switch (current behavior):
+  - In browser console:
+    - localStorage.setItem('data-source', 'api')
+    - localStorage.setItem('api-base', 'http://localhost:4000')
+    - location.reload()
+- Auto mode (now enabled): if no preference is set (or set to 'auto'), the app pings http://localhost:4000/api/health with a short timeout on startup.
+  - If reachable → uses API
+  - If not → falls back to localStorage

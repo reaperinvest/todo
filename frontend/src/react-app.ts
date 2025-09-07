@@ -175,6 +175,32 @@ function mount() {
   root.render(React.createElement(App));
 }
 
-document.title = 'Todo — TailwindCSS (React + TS)';
-mount();
+document.title = 'Todo - TailwindCSS (React + TS)';
 
+async function bootstrap() {
+  try {
+    const hasPref = !!localStorage.getItem('data-source');
+    const wantsAuto = localStorage.getItem('data-source') === 'auto';
+    if (!hasPref || wantsAuto) {
+      const base = localStorage.getItem('api-base') || 'http://localhost:4000';
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 800);
+      try {
+        const res = await fetch(`${base}/api/health`, { signal: ctrl.signal });
+        if (res.ok) {
+          localStorage.setItem('data-source', 'api');
+          localStorage.setItem('api-base', base);
+        } else {
+          localStorage.setItem('data-source', 'local');
+        }
+      } catch {
+        localStorage.setItem('data-source', 'local');
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+  } catch {}
+  mount();
+}
+
+bootstrap();
