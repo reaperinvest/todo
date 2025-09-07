@@ -1,0 +1,75 @@
+{
+  "info": {
+    "name": "Todo API (Local - Minimal)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/health" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', ()=>pm.response.to.have.status(200));",
+        "pm.test('ok true', ()=>pm.expect(pm.response.json().ok).to.eql(true));"
+      ]}}]
+    },
+    {
+      "name": "List todos",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/todos" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', ()=>pm.response.to.have.status(200));",
+        "pm.test('array', ()=>pm.expect(pm.response.json()).to.be.an('array'));"
+      ]}}]
+    },
+    {
+      "name": "Create todo",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"text\": \"Write docs\",\n  \"priority\": \"medium\"\n}" },
+        "url": "{{baseUrl}}/api/todos"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('201', ()=>pm.response.to.have.status(201));",
+        "const j = pm.response.json();",
+        "pm.test('has id', ()=>pm.expect(j).to.have.property('id'));",
+        "pm.environment.set('todoId', j.id);"
+      ]}}]
+    },
+    {
+      "name": "Update todo (completed=true)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"completed\": true\n}" },
+        "url": "{{baseUrl}}/api/todos/{{todoId}}"
+      },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', ()=>pm.response.to.have.status(200));",
+        "const j = pm.response.json();",
+        "pm.test('id matches', ()=>pm.expect(j.id).to.eql(pm.environment.get('todoId')));",
+        "pm.test('completed true', ()=>pm.expect(j.completed).to.eql(true));"
+      ]}}]
+    },
+    {
+      "name": "Delete todo",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos/{{todoId}}" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('204', ()=>pm.response.to.have.status(204));"
+      ]}}]
+    },
+    {
+      "name": "Clear completed",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos?only=completed" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('204', ()=>pm.response.to.have.status(204));"
+      ]}}]
+    },
+    {
+      "name": "Clear all",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos" },
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('204', ()=>pm.response.to.have.status(204));"
+      ]}}]
+    }
+  ]
+}
