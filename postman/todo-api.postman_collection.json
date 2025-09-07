@@ -17,7 +17,17 @@
         ]}
       }]
     },
-    { "name": "List todos", "request": { "method": "GET", "url": "{{baseUrl}}/api/todos" } },
+    {
+      "name": "List todos",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/todos" },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+          "pm.test('is array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+        ]}
+      }]
+    },
     {
       "name": "Create todo",
       "request": {
@@ -30,7 +40,11 @@
         "listen": "test",
         "script": {"type":"text/javascript","exec":[
           "pm.test('created 201', function () { pm.response.to.have.status(201); });",
-          "pm.environment.set('todoId', pm.response.json().id);"
+          "const j = pm.response.json();",
+          "pm.test('has id', function () { pm.expect(j).to.have.property('id'); });",
+          "pm.test('text string', function () { pm.expect(j.text).to.be.a('string'); });",
+          "pm.test('priority valid', function () { pm.expect(['low','medium','high']).to.include(j.priority); });",
+          "pm.environment.set('todoId', j.id);"
         ]}
       }]
     },
@@ -41,11 +55,48 @@
         "header": [{"key":"Content-Type","value":"application/json"}],
         "body": {"mode":"raw","raw":"{\n  \"completed\": true\n}"},
         "url": "{{baseUrl}}/api/todos/{{todoId}}"
-      }
+      },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+          "const j = pm.response.json();",
+          "pm.test('id matches', function () { pm.expect(j.id).to.eql(pm.environment.get('todoId')); });",
+          "pm.test('completed true', function () { pm.expect(j.completed).to.eql(true); });",
+          "pm.test('timestamps present', function () { pm.expect(j.createdAt).to.be.a('number'); pm.expect(j.updatedAt).to.be.a('number'); });"
+        ]}
+      }]
     },
-    { "name": "Delete todo", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos/{{todoId}}" } },
-    { "name": "Clear completed", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos?only=completed" } },
-    { "name": "Clear all", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos" } }
+    {
+      "name": "Delete todo",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos/{{todoId}}" },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 204', function () { pm.response.to.have.status(204); });"
+        ]}
+      }]
+    },
+    {
+      "name": "Clear completed",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos?only=completed" },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 204', function () { pm.response.to.have.status(204); });"
+        ]}
+      }]
+    },
+    {
+      "name": "Clear all",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos" },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 204', function () { pm.response.to.have.status(204); });"
+        ]}
+      }]
+    }
   ],
   "variable": [{ "key": "baseUrl", "value": "http://localhost:4000" }]
 }
