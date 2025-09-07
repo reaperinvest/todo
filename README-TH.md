@@ -136,3 +136,19 @@ $env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/todo"; npm -w b
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/todo npm -w backend run dev
 ```
 
+## การใช้ไฟล์ .env (แนะนำ)
+
+- มีไฟล์ตัวอย่าง `backend/.env.example` ให้คัดลอกเป็น `backend/.env` แล้วกรอกค่าจริงของคุณ.
+- เมื่อตั้งค่า `.env` แล้ว ไม่ต้อง export ตัวแปรในเทอร์มินัลทุกครั้ง — backend จะอ่านอัตโนมัติ.
+- สตาร์ทเซิร์ฟเวอร์:
+
+```powershell
+Copy-Item backend\.env.example backend\.env   # ทำครั้งแรกเท่านั้น
+# เปิดแก้ไข backend/.env แล้วใส่ DATABASE_URL หรือ PG*
+npm -w backend run dev
+```
+
+- ตรวจสุขภาพ API/DB: เปิด http://localhost:4000/api/health ควรได้ { ok: true, db: "ok" }
+- รัน ensure schema แบบครั้งเดียว (ทางเลือก): `npm -w backend run migrate`
+- ถ้ารหัสผ่านมีอักขระพิเศษ (@, #, ?, / ฯลฯ) ให้เขียนแบบ URL-encode ใน `DATABASE_URL` เช่น @ → %40, # → %23
+
