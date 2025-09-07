@@ -1,4 +1,9 @@
-# Todo Monorepo (Frontend + Backend)
+﻿# todo
+สร้างโปรแกรม จาก Ai CODEX
+
+---
+
+## Todo Monorepo (Frontend + Backend)
 
 This repo is split into two apps using npm workspaces:
 
@@ -79,13 +84,15 @@ The UI already handles loading and basic error states for API operations.
 
 At repo root (workspace scripts):
 
-- `npm run dev:frontend` — runs Tailwind (watch) and TypeScript (watch) in `frontend/`
-- `npm run build:frontend` — builds CSS + TypeScript once
-- `npm run dev:backend` — starts the stub API server
-- `npm run start:backend` — same as above (production-like)
+- `npm run dev:frontend` ΓÇö runs Tailwind (watch) and TypeScript (watch) in `frontend/`
+- `npm run build:frontend` ΓÇö builds CSS + TypeScript once
+- `npm run dev:backend` ΓÇö starts the stub API server
+- `npm run start:backend` ΓÇö same as above (production-like)
 
 Inside `frontend/` (if you prefer local scripts):
 
-- `npm run dev` — same as root `dev:frontend`
-- `npm run build` — same as root `build:frontend`
-- `npm run type-check` — TypeScript type checking only
+- `npm run dev` ΓÇö same as root `dev:frontend`
+- `npm run build` ΓÇö same as root `build:frontend`
+- `npm run type-check` ΓÇö TypeScript type checking only
+
+
