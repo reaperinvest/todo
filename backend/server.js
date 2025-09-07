@@ -1,4 +1,5 @@
 // Minimal Node HTTP server with PostgreSQL-backed Todo API
+require('dotenv').config();
 const http = require('http');
 const { URL } = require('url');
 const crypto = require('crypto');
@@ -124,7 +125,19 @@ const server = http.createServer(async (req, res) => {
   return send(404, { error: 'route not found' });
 });
 
-server.listen(PORT, async () => {
+// Support one-off migration mode: `node server.js --migrate`
+if (process.argv.includes('--migrate')) {
+  ensureSchema()
+    .then(() => {
+      console.log('DB schema ensured.');
+      process.exit(0);
+    })
+    .catch((e) => {
+      console.error('Migration failed:', e.message || e);
+      process.exit(1);
+    });
+} else {
+  server.listen(PORT, async () => {
   console.log(`API listening on http://localhost:${PORT}`);
   try {
     await ensureSchema();
@@ -133,7 +146,8 @@ server.listen(PORT, async () => {
   } catch (e) {
     console.warn('Could not ensure DB schema at startup:', e.message || e);
   }
-});
+  });
+}
 
 function readJson(req) {
   return new Promise((resolve, reject) => {

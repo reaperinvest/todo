@@ -120,3 +120,12 @@ Example (bash):
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/todo npm -w backend run dev
 ```
 
+### Using .env (recommended)
+
+- Copy `backend/.env.example` to `backend/.env` and fill in your credentials.
+- The backend auto-loads `.env` via dotenv, so you can simply run:
+
+```bash
+npm -w backend run dev
+```
+

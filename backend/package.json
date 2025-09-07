@@ -9,6 +9,7 @@
     "migrate": "node server.js --migrate"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "pg": "^8.12.0"
   }
 }
