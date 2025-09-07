@@ -1,87 +1,63 @@
-# Todo Monorepo (Frontend + Backend) — ภาษาไทย
-เริ่มต้น
-โปรเจกต์นี้เป็นโมโนรีโปที่แยกเป็น 2 แอป:
+# Todo Monorepo (Frontend + Backend)
 
-- `frontend/`: แอป Todo เขียนด้วย TypeScript + React และใช้ TailwindCSS (ไม่พึ่งบันเดิลเลอร์หนักๆ)
-  - React 18 โหลดผ่าน CDN ใน `frontend/src/index.html`
-  - ซอร์ส TypeScript อยู่ที่ `frontend/src/react-app.ts` และโฟลเดอร์ `frontend/src/components/`
-  - TypeScript คอมไพล์ไปที่ `frontend/public/build/` และหน้า HTML โหลดสคริปต์ `../public/build/react-app.js`
-- `backend/`: เซิร์ฟเวอร์ Node HTTP แบบมินิมอล ให้ Todo API (ยังไม่มีฐานข้อมูล)
+โปรเจกต์นี้เป็น Monorepo แบ่งออกเป็น 2 ส่วนโดยใช้ npm workspaces:
 
-## เริ่มต้นอย่างรวดเร็ว
+- `frontend/`: แอป Todo ด้วย TypeScript + React + TailwindCSS (ไม่ใช้ bundler หนัก)
+  - โหลด React 18 ผ่าน CDN ใน `frontend/src/index.html`
+  - โค้ดหลักอยู่ที่ `frontend/src/react-app.ts` และโฟลเดอร์ `frontend/src/components/`
+  - คอมไพล์ TypeScript ไปที่ `frontend/public/build/` และหน้า HTML โหลด `../public/build/react-app.js`
+- `backend/`: เซิร์ฟเวอร์ Node HTTP แบบ minimal ให้ REST API สำหรับ Todo
 
-รันจากโฟลเดอร์รูทของรีโป:
+## เริ่มต้นใช้งาน (Quick start)
 
-1) ติดตั้งแพ็กเกจทั้งหมด (ใช้ npm workspaces)
+ทำงานจากโฟลเดอร์รากของ repo:
 
-```bash
-npm install
-```
+- โหมดพัฒนา Frontend (watch Tailwind + TypeScript):
 
-2) พัฒนา Frontend (watch ทั้ง Tailwind + TypeScript):
+  ```bash
+  npm run dev:frontend
+  ```
 
-```bash
-npm run dev:frontend
-```
+  แล้วเปิด `frontend/src/index.html` ในเบราว์เซอร์ (หรือเสิร์ฟโฟลเดอร์ด้วย static server)
+  หมายเหตุ: ให้แน่ใจว่าไฟล์ `frontend/public/build/react-app.js` ถูกสร้างโดย watcher แล้ว
 
-เปิดไฟล์ `frontend/src/index.html` ในเบราว์เซอร์ของคุณ (หรือเสิร์ฟโฟลเดอร์ด้วย static server ที่คุณถนัด)
-หมายเหตุ: ให้แน่ใจว่าสคริปต์ watch ได้สร้างไฟล์ `frontend/public/build/react-app.js` แล้ว (สคริปต์ dev จะดูแลให้)
+### รายละเอียด Frontend (React + TypeScript)
 
-3) พัฒนา Backend:
+- หน้าหลักโหลด React 18 จาก CDN และ mount แอปจาก `frontend/public/build/react-app.js` (ซอร์ส: `frontend/src/react-app.ts`)
+- ไม่ต้องใช้ bundler หากภายหลังต้องการย้ายไป Vite/Next ก็ย้ายคอมโพเนนต์ได้ง่าย
 
-```bash
-npm run dev:backend
-```
+- สร้างไฟล์ Frontend ครั้งเดียว:
 
-API จะรันที่ `http://localhost:4000`
+  ```bash
+  npm run build:frontend
+  ```
 
-## สคริปต์ที่มีให้ใช้
+- รัน Backend dev server:
 
-รันจากรูท (ควบคุม workspace):
+  ```bash
+  npm run dev:backend
+  ```
 
-- `npm run dev:frontend` — รัน Tailwind (watch) + TypeScript (watch) ในโฟลเดอร์ `frontend/`
-- `npm run build:frontend` — สร้างไฟล์ CSS + TypeScript ครั้งเดียว
-- `npm run dev:backend` — เริ่มต้นเซิร์ฟเวอร์ API ตัวอย่าง
-- `npm run start:backend` — เริ่มต้นแบ็กเอนด์โหมด production-like (เหมือน `dev` ในโปรเจกต์นี้)
+  API จะรันที่ `http://localhost:4000` โดยมีเส้นทางตัวอย่าง:
 
-ภายในโฟลเดอร์ `frontend/` (ถ้าต้องการรันเฉพาะส่วนหน้า):
+  - `GET    /api/todos`
+  - `POST   /api/todos`        (body: `{ text, priority }`)
+  - `PATCH  /api/todos/:id`    (body: partial `{ text?, completed?, priority? }`)
+  - `DELETE /api/todos/:id`
+  - `DELETE /api/todos?only=completed`
 
-- `npm run dev` — เหมือน `dev:frontend` ที่รูท
-- `npm run build` — เหมือน `build:frontend` ที่รูท
-- `npm run type-check` — เช็กชนิดข้อมูล TypeScript อย่างเดียว
+## หมายเหตุ
 
-## โครงสร้าง Frontend แบบย่อ
+- ฝั่ง frontend มีชั้น repository (`frontend/src/data/repository.ts`) ค่าเริ่มต้นใช้ `localStorage` และสามารถสลับไปใช้ API ได้โดยไม่ต้องแก้ UI
+- Tailwind จะสร้างไฟล์ที่ `frontend/public/styles.css` ควรรัน dev/build ก่อนเปิดหน้า HTML
+- TypeScript จะคอมไพล์ไปที่ `frontend/public/build/` ในโหมด dev จะ watch และเขียนไฟล์ให้อัตโนมัติ
 
-- หน้า HTML หลัก: `frontend/src/index.html`
-- แอป React (ไม่มี JSX ใช้ `React.createElement`): `frontend/src/react-app.ts`
-- คอมโพเนนต์: `frontend/src/components/` (เช่น `Header.ts`, `Dashboard.ts`, `SearchBar.ts`, `TodoItem.ts`, `TodoList.ts`)
-- ชั้นข้อมูล (Repository): `frontend/src/data/repository.ts` เลือกแหล่งข้อมูลได้ระหว่าง `localStorage` หรือ HTTP API
-- สไตล์: Tailwind เริ่มจาก `frontend/src/styles/main.css` และ build ไป `frontend/public/styles.css`
+## สลับ Frontend ไปใช้ Backend API
 
-## API แบ็กเอนด์ (สรุป)
+โดยปกติ frontend ใช้ `localStorage` ถ้าต้องการสลับไปใช้ HTTP API:
 
-ฐานข้อมูลเป็น in-memory (ข้อมูลหายเมื่อรีสตาร์ต) เส้นทางที่มี:
-
-- `GET    /api/todos` — ดึงรายการทั้งหมด
-- `POST   /api/todos` — สร้างงานใหม่ (บอดี: `{ text, priority }` โดย `priority` เป็น `low|medium|high`)
-- `PATCH  /api/todos/:id` — อัปเดตบางส่วน (บอดี: `{ text?, completed?, priority? }`)
-- `DELETE /api/todos/:id` — ลบงานตามไอดี
-- `DELETE /api/todos?only=completed` — ลบเฉพาะงานที่ทำเสร็จแล้ว
-
-ตัวอย่างเรียกสร้างงานด้วย cURL:
-
-```bash
-curl -X POST http://localhost:4000/api/todos \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Buy milk", "priority": "medium"}'
-```
-
-## การสลับแหล่งข้อมูล (Frontend)
-
-โดยค่าเริ่มต้น Frontend จะใช้ `localStorage`. หากต้องการสลับไปใช้ HTTP API:
-
-1) เริ่มต้นเซิร์ฟเวอร์แบ็กเอนด์: `npm run dev:backend`
-2) เปิด DevTools Console ในเบราว์เซอร์ แล้วรัน:
+1) สตาร์ท backend: `npm run dev:backend`
+2) เปิด DevTools Console ในเบราว์เซอร์แล้วสั่ง:
 
 ```js
 localStorage.setItem('data-source', 'api');
@@ -89,40 +65,38 @@ localStorage.setItem('api-base', 'http://localhost:4000');
 location.reload();
 ```
 
-สลับกลับมาโหมด local:
+สลับกลับมา local mode:
 
 ```js
 localStorage.setItem('data-source', 'local');
 location.reload();
 ```
 
-UI รองรับสถานะกำลังโหลดและแสดงข้อผิดพลาดจาก API แล้วในระดับพื้นฐาน
+UI มีสถานะโหลดและ error handling พื้นฐานให้แล้ว
 
-## หมายเหตุและเคล็ดลับ
+## ชุดคำสั่งที่ใช้บ่อย (Scripts)
 
-- Tailwind จะ build ออกไปที่ `frontend/public/styles.css` และ TypeScript จะ build ไป `frontend/public/build/` ดังนั้นควรรัน `dev` หรือ `build` ให้เสร็จก่อนเปิดหน้า HTML
-- หากเปิดไฟล์ `frontend/src/index.html` ตรงๆ แล้วสไตล์ไม่ขึ้นหรือสคริปต์ไม่ทำงาน ให้ตรวจสอบว่าไฟล์ `public/styles.css` และ `public/build/react-app.js` ถูกสร้างแล้ว หรือพิจารณาเสิร์ฟผ่าน static server (เช่น `npx http-server frontend`)
-- ชั้น Repository (`frontend/src/data/repository.ts`) ทำให้สามารถย้ายไปใช้แบ็กเอนด์จริงในภายหลังโดยไม่ต้องแก้ UI มาก — เพียงคงสัญญา API ให้เหมือนเดิม
+ใช้จากโฟลเดอร์รากของ repo:
 
-## แนวทางต่อยอด
+- `npm run dev:frontend` — รัน Tailwind (watch) + TypeScript (watch) ที่ `frontend/`
+- `npm run build:frontend` — สร้าง CSS + TypeScript ครั้งเดียว
+- `npm run dev:backend` — สตาร์ท API (โหมดพัฒนา)
+- `npm run start:backend` — สตาร์ท API (โหมดใกล้ production)
 
-- เชื่อมต่อฐานข้อมูลจริงให้กับแบ็กเอนด์ (เช่น SQLite/Postgres) และเพิ่มการตรวจสอบข้อมูลฝั่งเซิร์ฟเวอร์
-- เพิ่มชุดทดสอบ (unit/integration) สำหรับ repository และคอมโพเนนต์สำคัญ
-- ใช้บันเดิลเลอร์/เฟรมเวิร์ก (เช่น Vite/Next) หากต้องการ DX ที่ครบขึ้น โดยย้ายโค้ดปัจจุบันเข้าโปรเจกต์ใหม่ได้โดยแทบไม่ต้องแก้ที่ชั้น Repository
+ภายใน `frontend/` (หากอยากใช้สคริปต์ภายในโฟลเดอร์นั้น):
 
----
+- `npm run dev` — เทียบเท่า `dev:frontend`
+- `npm run build` — เทียบเท่า `build:frontend`
+- `npm run type-check` — ตรวจ TypeScript อย่างเดียว
 
-หากต้องการความช่วยเหลือในการตั้งค่าแวดล้อมหรือดีบักเพิ่มเติม แจ้งรายละเอียดระบบของคุณ (เช่นเวอร์ชัน Node.js/เบราว์เซอร์) เพื่อช่วยวิเคราะห์ได้รวดเร็วยิ่งขึ้น
-
-## แนวทางการเขียนเอกสาร
-
-- เอกสาร: เมื่อมีการเปลี่ยนแปลงโครงสร้าง โค้ด สคริปต์ หรือขั้นตอนการใช้งาน ให้ปรับปรุงทั้ง README.md และ README-TH.md ให้สอดคล้องกันเสมอ
 ## ฐานข้อมูล (PostgreSQL)
 
-- Backend รองรับ PostgreSQL สำหรับจัดเก็บข้อมูลถาวรแล้ว
-- ตั้งค่าได้ด้วยตัวแปรแวดล้อม: ใช้ `DATABASE_URL` (เช่น `postgres://user:pass@localhost:5432/todo`) หรือกำหนดแยก `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` (ถ้าจำเป็น `PGSSL=1`)
+- Backend รองรับ PostgreSQL เพื่อเก็บข้อมูลถาวร
+- ตั้งค่าด้วยตัวแปรแวดล้อม (เลือกอย่างใดอย่างหนึ่ง):
+  - `DATABASE_URL` (เช่น `postgres://user:pass@localhost:5432/todo`)
+  - หรือระบุแยก `PGHOST`, `PGUSER`, `PGPASSWORD`, `PGDATABASE`, `PGPORT` (ถ้าต้องการ SSL: `PGSSL=1`)
 - เมื่อรันเซิร์ฟเวอร์ครั้งแรก ระบบจะสร้างตาราง `todos` ให้อัตโนมัติหากยังไม่มี
-- มีคำสั่งช่วย migration: `npm -w backend run migrate`
+- คำสั่ง migration แบบครั้งเดียว: `npm -w backend run migrate`
 
 ตัวอย่าง (Windows PowerShell):
 
@@ -136,25 +110,19 @@ $env:DATABASE_URL = "postgres://postgres:postgres@localhost:5432/todo"; npm -w b
 DATABASE_URL=postgres://postgres:postgres@localhost:5432/todo npm -w backend run dev
 ```
 
-## การใช้ไฟล์ .env (แนะนำ)
+### การใช้ไฟล์ .env (แนะนำ)
 
-- มีไฟล์ตัวอย่าง `backend/.env.example` ให้คัดลอกเป็น `backend/.env` แล้วกรอกค่าจริงของคุณ.
-- เมื่อตั้งค่า `.env` แล้ว ไม่ต้อง export ตัวแปรในเทอร์มินัลทุกครั้ง — backend จะอ่านอัตโนมัติ.
-- สตาร์ทเซิร์ฟเวอร์:
+- คัดลอก `backend/.env.example` เป็น `backend/.env` แล้วแก้ไขค่าจริงของคุณ
+- Backend โหลด `.env` อัตโนมัติผ่าน dotenv จึงสามารถรันได้ทันทีด้วย:
 
-```powershell
-Copy-Item backend\.env.example backend\.env   # ทำครั้งแรกเท่านั้น
-# เปิดแก้ไข backend/.env แล้วใส่ DATABASE_URL หรือ PG*
+```bash
 npm -w backend run dev
 ```
 
-- ตรวจสุขภาพ API/DB: เปิด http://localhost:4000/api/health ควรได้ { ok: true, db: "ok" }
-- รัน ensure schema แบบครั้งเดียว (ทางเลือก): `npm -w backend run migrate`
-- ถ้ารหัสผ่านมีอักขระพิเศษ (@, #, ?, / ฯลฯ) ให้เขียนแบบ URL-encode ใน `DATABASE_URL` เช่น @ → %40, # → %23
+หมายเหตุ: ถ้ารหัสผ่านมีอักขระพิเศษ (@, #, ?, / ฯลฯ) ให้เขียนแบบ URL-encode ใน `DATABASE_URL` เช่น @ → %40, # → %23
 
+## แนวทางการมีส่วนร่วม (Contributing)
 
-## การตรวจเอกสารก่อน commit (Husky)
-- ในโปรเจกต์นี้มี hook ตรวจเอกสาร ก่อน commit หากมีการแก้โค้ด/คอนฟิก (ackend/, rontend/, package*.json) แต่ไม่ได้อัปเดต README.md และ README-TH.md พร้อมกัน การ commit จะล้มเหลว
-- ถ้าพึ่งโคลนมา ให้รัน 
-pm install เพื่อเปิดใช้งาน hook ก่อน
+- เอกสาร: เมื่อมีการเปลี่ยนแปลงฟังก์ชัน โครงสร้าง สคริปต์ ขั้นตอนใช้งาน หรือเอ็นพอยต์ โปรดอัปเดตทั้ง `README.md` และ `README-TH.md` ให้สอดคล้องกันเสมอ
+- การตรวจเอกสารก่อน commit (Husky): มี hook ตรวจว่าเมื่อมีการแก้โค้ด/คอนฟิก แต่ไม่อัปเดต README ทั้งสองไฟล์ การ commit จะล้มเหลว ให้รัน `npm install` หนึ่งครั้งหลังโคลนเพื่อเปิดใช้งาน hook
 
