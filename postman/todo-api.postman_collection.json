@@ -1,78 +1,51 @@
 {
   "info": {
+    "_postman_id": "6d5f9f2b-3c76-4a8e-9a32-83b3b1b9a111",
     "name": "Todo API (Local)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Collection to test the local Todo API backed by PostgreSQL. Set {{baseUrl}} to your server, e.g. http://localhost:4000"
+    "description": "Test the local Todo API backed by PostgreSQL. Set {{baseUrl}} to your server (default http://localhost:4000)."
   },
   "item": [
     {
       "name": "Health",
-      "request": {
-        "method": "GET",
-        "url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api", "health"] }
-      },
-      "event": [
-        {"listen":"test","script":{"exec":[
-          "pm.test('status 200', () => pm.response.code === 200);",
-          "pm.test('ok true', () => pm.response.json().ok === true);"
-        ],"type":"text/javascript"}}
-      ]
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/health" },
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+          "pm.test('ok true', function () { pm.expect(pm.response.json().ok).to.eql(true); });"
+        ]}
+      }]
     },
-    {
-      "name": "List todos",
-      "request": {
-        "method": "GET",
-        "url": { "raw": "{{baseUrl}}/api/todos", "host": ["{{baseUrl}}"], "path": ["api", "todos"] }
-      }
-    },
+    { "name": "List todos", "request": { "method": "GET", "url": "{{baseUrl}}/api/todos" } },
     {
       "name": "Create todo",
       "request": {
         "method": "POST",
-        "header": [ {"key":"Content-Type","value":"application/json"} ],
+        "header": [{"key":"Content-Type","value":"application/json"}],
         "body": {"mode":"raw","raw":"{\n  \"text\": \"Write docs\",\n  \"priority\": \"medium\"\n}"},
-        "url": { "raw": "{{baseUrl}}/api/todos", "host": ["{{baseUrl}}"], "path": ["api", "todos"] }
+        "url": "{{baseUrl}}/api/todos"
       },
-      "event": [
-        {"listen":"test","script":{"exec":[
-          "pm.test('created 201', () => pm.response.code === 201);",
-          "const j = pm.response.json(); pm.environment.set('todoId', j.id);"
-        ],"type":"text/javascript"}}
-      ]
+      "event": [{
+        "listen": "test",
+        "script": {"type":"text/javascript","exec":[
+          "pm.test('created 201', function () { pm.response.to.have.status(201); });",
+          "pm.environment.set('todoId', pm.response.json().id);"
+        ]}
+      }]
     },
     {
       "name": "Update todo (completed=true)",
       "request": {
         "method": "PATCH",
-        "header": [ {"key":"Content-Type","value":"application/json"} ],
+        "header": [{"key":"Content-Type","value":"application/json"}],
         "body": {"mode":"raw","raw":"{\n  \"completed\": true\n}"},
-        "url": { "raw": "{{baseUrl}}/api/todos/{{todoId}}", "host": ["{{baseUrl}}"], "path": ["api", "todos", "{{todoId}}"] }
+        "url": "{{baseUrl}}/api/todos/{{todoId}}"
       }
     },
-    {
-      "name": "Delete todo",
-      "request": {
-        "method": "DELETE",
-        "url": { "raw": "{{baseUrl}}/api/todos/{{todoId}}", "host": ["{{baseUrl}}"], "path": ["api", "todos", "{{todoId}}"] }
-      }
-    },
-    {
-      "name": "Clear completed",
-      "request": {
-        "method": "DELETE",
-        "url": { "raw": "{{baseUrl}}/api/todos?only=completed", "host": ["{{baseUrl}}"], "path": ["api", "todos"], "query":[{"key":"only","value":"completed"}] }
-      }
-    },
-    {
-      "name": "Clear all",
-      "request": {
-        "method": "DELETE",
-        "url": { "raw": "{{baseUrl}}/api/todos", "host": ["{{baseUrl}}"], "path": ["api", "todos"] }
-      }
-    }
+    { "name": "Delete todo", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos/{{todoId}}" } },
+    { "name": "Clear completed", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos?only=completed" } },
+    { "name": "Clear all", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/todos" } }
   ],
-  "variable": [
-    { "key": "baseUrl", "value": "http://localhost:4000" }
-  ]
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:4000" }]
 }
-
